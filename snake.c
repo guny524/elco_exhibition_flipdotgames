@@ -1,6 +1,41 @@
+#define ISWINDOW 0
 #include<stdio.h>
 #include<stdlib.h>
-#include<Windows.h>
+#if ISWINDOW
+#include<windows.h>
+#else
+#include<termios.h>
+#include<unistd.h>
+#include<sys/ioctl.h>
+int getch(void)
+{
+	struct termios oldt, newt;
+	int ch;
+
+	tcgetattr(0, &oldt);
+	newt = oldt;
+
+	newt.c_lflag &= ~(ICANON | ECHO);
+        tcsetattr(0, TCSANOW, &newt);
+
+	ch = getchar();
+        tcsetattr(0, TCSANOW, &oldt);
+	return ch;
+}
+_Bool kbhit()
+{
+	struct termios term;
+	tcgetattr(0, &term);
+	struct termios term2 = term;
+	term2.c_lflag &= ~ICANON;
+	tcsetattr(0, TCSANOW, &term2);
+
+	int byteswaiting;
+	ioctl(0, FIONREAD, &byteswaiting);
+        tcsetattr(0, TCSANOW, &term);
+	return byteswaiting > 0;
+}
+#endif
 #include<time.h>
 
 #define MAP_ROW 12
@@ -15,10 +50,14 @@ int apple_col = 0;
 
 void gotoxy(int x, int y)
 {
+#if ISWINDOW
 	COORD coord;
 	coord.X = x;
 	coord.Y = y;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+#else
+	printf("%c[%d;%df", 0x1B, y, x);
+#endif
 }
 void print(int x, int y)
 {
@@ -58,6 +97,11 @@ void init_apple()
 }
 int main()
 {
+#if ISWINDOW
+	system("cls");
+#else
+	system("clear");
+#endif
 	srand((unsigned int)time(NULL));
 	char key = 0;
 	printmap();
@@ -68,8 +112,11 @@ int main()
 	{
 		print_apple();
 		print_snake();
+#if ISWINDOW
 		Sleep(1000);
-
+#else
+		sleep(1);
+#endif
 		while (kbhit())
 			key = getch();
 		printf("%c", key);
