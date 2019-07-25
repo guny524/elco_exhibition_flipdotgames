@@ -1,4 +1,4 @@
-#define ISWINDOW 0
+#define ISWINDOW 1
 #include<stdio.h>
 #include<stdlib.h>
 #if ISWINDOW
