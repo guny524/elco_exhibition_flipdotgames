@@ -2,8 +2,12 @@
 #include"snake.h"
 
 int snake[MAP_ROW][MAP_COL] = { {0,} };
-int apple_row = 0;
-int apple_col = 0;
+int apple_row;
+int apple_col;
+
+int snake_size;
+int snake_head_row;
+int snake_head_col;
 
 void printmap()
 {
@@ -18,7 +22,10 @@ void printmap()
 }
 void init_snake()
 {
-	snake[rand() % (MAP_ROW-1)+1][rand() % (MAP_COL-1)+1] = 1;
+	snake_head_row = rand() % (MAP_ROW - 1) + 1;
+	snake_head_col = rand() % (MAP_COL - 1) + 1;
+	snake[snake_head_row][snake_head_col] = 1;
+	snake_size = 1;
 }
 void print_snake()
 {
@@ -27,14 +34,22 @@ void print_snake()
 			if (snake[i][j])
 				print(i,j);
 }
-void print_apple()
-{
-	print(apple_row, apple_col);
-}
 void init_apple()
 {
 	apple_row = rand() % (MAP_ROW - 1) + 1;
 	apple_col = rand() % (MAP_COL - 1) + 1;
+}
+void print_apple()
+{
+	print(apple_row, apple_col);
+}
+int is_crash()
+{
+	;
+}
+int is_collide()
+{
+	;
 }
 void run_snake()
 {
@@ -42,19 +57,20 @@ void run_snake()
 	printf("\n");
 	init_snake();
 	init_apple();
+
 	while (1)
 	{
 		print_apple();
 		print_snake();
-#if ISWINDOW
-		Sleep(1000);
-#else
-		sleep(1);
-#endif
-		while (kbhit())
-			key = getch();
-		printf("%c", key);
-		if (key == 0x1b)
+		SLEEP();
+
+		GETKEY();
+		if (key == 0x1b)	//ESC
 			break;
+
+		//key_check
+		//collide_check
+		//move
+		
 	}
 }
