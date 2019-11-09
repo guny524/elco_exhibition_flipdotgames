@@ -1,76 +1,120 @@
-#include"display.h"
+#include"common.h"
 #include"snake.h"
 
-int snake[MAP_ROW][MAP_COL] = { {0,} };
-int apple_row;
-int apple_col;
+extern char g_arr[MAP_COL][MAP_ROW];
+extern int g_key;
+extern char g_buffer;
 
-int snake_size;
-int snake_head_row;
-int snake_head_col;
+void init_map(int map[MAP_COL][MAP_ROW])
+{
+	for (int i = 0; i < MAP_COL; i++)
+		for (int j = 0; j < MAP_ROW; j++)
+			map[i][j] = 0;
 
-void printmap()
-{
-	for (int i = 0; i < MAP_ROW; i++)
-		print(i, 0);
-	for (int i = 0; i < MAP_ROW; i++)
-		print(i, MAP_COL);
 	for (int i = 0; i < MAP_COL; i++)
-		print(0, i);
+		map[i][0] = 1;
 	for (int i = 0; i < MAP_COL; i++)
-		print(MAP_ROW, i);
-}
-void init_snake()
-{
-	snake_head_row = rand() % (MAP_ROW - 1) + 1;
-	snake_head_col = rand() % (MAP_COL - 1) + 1;
-	snake[snake_head_row][snake_head_col] = 1;
-	snake_size = 1;
-}
-void print_snake()
-{
+		map[i][MAP_ROW-1] = 1;
 	for (int i = 0; i < MAP_ROW; i++)
-		for (int j = 0; j < MAP_COL; j++)
-			if (snake[i][j])
-				print(i,j);
+		map[0][i] = 1;
+	for (int i = 0; i < MAP_ROW; i++)
+		map[MAP_COL-1][i] = 1;
 }
-void init_apple()
+void init_snake(snake *s)
 {
-	apple_row = rand() % (MAP_ROW - 1) + 1;
-	apple_col = rand() % (MAP_COL - 1) + 1;
+	s->arr[0].col = rand() % (MAP_COL - 1) + 1;
+	s->arr[0].row = rand() % (MAP_ROW - 1) + 1;
+	s->size = 1;
 }
-void print_apple()
+void init_feed(coor *feed)
 {
-	print(apple_row, apple_col);
+	feed->col = rand() % (MAP_COL - 1) + 1;
+	feed->row = rand() % (MAP_ROW - 1) + 1;
 }
-int is_crash()
+void merge_arr(int map[MAP_COL][MAP_ROW], snake *s, coor *feed)
+{
+	for (int i = 0; i < MAP_COL; i++)
+		for (int j = 0; j < MAP_ROW; j++)
+			g_arr[i][j] = map[i][j];	//맵 표시
+	for (int i = 0; i < s->size; i++)
+		g_arr[s->arr[i].col][s->arr[i].row] = 1;
+	g_arr[feed->col][feed->row] = 1;
+}
+void move(snake *s, char key)	//꼬리칸 머리에서 키보드 방향으로 이동
+{
+	coor tmp_head = s->arr[0];	//일단 머리 저장
+	for (int i=0;i<s->size-1;i++)	//머리 다음부터 꼬리방향에 있는거 쭉 땡겨옴
+		s->arr[i] = s->arr[i+1];
+	switch(key)	//저장된 머리 이동
+	{
+	case 'a':
+		s->arr[0].row--;
+		break;
+	case 'w':
+		s->arr[0].col--;
+		break;
+	case 's':
+		s->arr[0].col++;
+		break;
+	case 'd':
+		s->arr[0].row++;
+		break;
+	}
+}
+int is_crash()	//with map?
 {
 	;
 }
-int is_collide()
+int is_collide()	//it self?
+{
+	;
+}
+int is_consume()	//with feed?
 {
 	;
 }
 void run_snake()
 {
-	printmap();
-	printf("\n");
-	init_snake();
-	init_apple();
+	char map[MAP_COL][MAP_ROW] = { {0,} };
+	snake s = { 0, };
+	coor feed = { 0, };
+
+	snake tmp_s = { 0, };
+
+	g_key = 0;
+
+	init_map(map);
+	init_snake(&s);
+	init_feed(&feed);
+
+	merge_arr(map, &s, &feed);
+	send_arr();
 
 	while (1)
 	{
-		print_apple();
-		print_snake();
-		SLEEP();
-
-		GETKEY();
-		if (key == 0x1b)	//ESC
+		wait();
+		if (kbhit())
+		{
+			g_key = getch();
+			while (kbhit())
+				getch();
+		}
+		if (g_key == 0x1b)	//ESC
 			break;
+		else if (g_key == 0)
+		{
 
-		//key_check
-		//collide_check
-		//move
-		
+		}
+		else
+		{
+			move(&s, g_key);
+
+			//collide_check
+
+			//move
+
+			merge_arr(map, &s, &feed);
+			send_arr();
+		}
 	}
 }

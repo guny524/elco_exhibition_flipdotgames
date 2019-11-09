@@ -1,15 +1,17 @@
 #pragma once
 
-#define MAP_ROW 12
-#define MAP_COL 16
+typedef struct Coordinate {
+	int row, col;
+}coor;
+typedef struct Snake {
+	coor arr[MAP_COL * MAP_ROW];
+	int size;
+}snake;
 
-extern int snake[MAP_ROW][MAP_COL];
-extern int apple_row;
-extern int apple_col;
-
-void printmap();
-void init_snake();
-void print_snake();
-void print_apple();
-void init_apple();
+void init_map(int map[MAP_COL][MAP_ROW]);
+void init_snake(snake *s);
+void init_feed(coor *f);
+void merge_arr(int map[MAP_COL][MAP_ROW], snake *s, coor *f);
+int is_crash();
+int is_collide();
 void run_snake();

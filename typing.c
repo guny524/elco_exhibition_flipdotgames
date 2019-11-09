@@ -1,28 +1,38 @@
-#include"display.h"
+#include"common.h"
 #include"typing.h"
+
+extern char g_arr[MAP_COL][MAP_ROW];
+extern int g_key;
+extern char g_buffer;
 
 void typing(char key)
 {
-	if (key == 0x08)	//BackSpace
+	switch (key)
 	{
-		printf("BACK");
+		case 0x08:	//BackSpace
+			printf("BACK");
+			break;
+		default:
+			printf("%c",key);
+			break;
 	}
 }
-void typing_str(const char* str)
+void typing_str(char *str)
 {
-	printf(str);
+	char *ch = str;
+	while(*ch != '\0')
+		typing(*(ch++));
 }
 void run_typing()
 {
+	clear();
 	typing_str("TYPING!!!!\n");
 	while (1)
 	{
-		GETKEY();
-		if (key == 0x1b)	//ESC
+		g_key = getch();
+		if (g_key == 0x1b)	//ESC
 			break;
 		else
-		{
-			printf("%c", key);
-		}
+			typing(g_key);
 	}
 }
