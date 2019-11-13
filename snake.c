@@ -1,9 +1,10 @@
-#include"common.h"
-#include"snake.h"
+#include<stdio.h>
+#include<stdlib.h>	//rand(), srand();
+#include<time.h>	//time(NULL);
 
-extern char g_arr[MAP_COL][MAP_ROW];
-extern int g_key;
-extern char g_buffer;
+#include"display.h"
+#include"snake.h"
+#include"i2c.h"
 
 void init_map(int map[MAP_COL][MAP_ROW])
 {
@@ -78,9 +79,9 @@ void run_snake()
 	char map[MAP_COL][MAP_ROW] = { {0,} };
 	snake s = { 0, };
 	coor feed = { 0, };
-
 	snake tmp_s = { 0, };
 
+	srand((unsigned int)time(NULL));
 	g_key = 0;
 
 	init_map(map);
@@ -93,12 +94,7 @@ void run_snake()
 	while (1)
 	{
 		wait();
-		if (kbhit())
-		{
-			g_key = getch();
-			while (kbhit())
-				getch();
-		}
+		get_key();
 		if (g_key == 0x1b)	//ESC
 			break;
 		else if (g_key == 0)

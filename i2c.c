@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
-#include <WiringPi.h>
-#include <wiringPiI2C.h>
 
 #include "i2c.h"
 
@@ -25,8 +23,8 @@ unsigned char CalcChecksum(unsigned char *data, int leng)
 int raspi_i2c_set()
 {
         int fd;
-        if( fd = int wiringPiI2CSetup(0x68) == -1 ){
-                printf(Unable to initialise I2C ERROR: %s\n, strerror(errno));
+        if( fd = wiringPiI2CSetup(0x68) == -1 ){
+                printf("Unable to initialise I2C ERROR: %s\n", strerror(errno));
         }
         return fd;
 }
@@ -47,16 +45,16 @@ int raspi_i2c_read(int fd, unsigned char address, unsigned char *data)
 {
         unsigned char length;
         if(wiringPiI2CReadReg8(fd, address) == 0xFF){                           //START BYTE
-                printf("START BYTE ERROR\n")
-                return -1
+			printf("START BYTE ERROR\n");
+				return -1;
         }
         length = wiringPiI2CReadReg8(fd, address);
         for( int i = 0;i < length;i++ ){
                 data[i] = wiringPiI2CReadReg8(fd, address);
         }
         if(wiringPiI2CReadReg8(fd, address) == 0xFE){                           //STOP BYTE
-                printf("STOP BYTE ERROR\n")
-                return -1
+			printf("STOP BYTE ERROR\n");
+				return -1;
         }
         if( data[length - 1] != CalcChecksum(data, length)){                    //CHECKSUM
                 printf("CHECKSUM ERROR\n");
@@ -65,5 +63,3 @@ int raspi_i2c_read(int fd, unsigned char address, unsigned char *data)
         return length
         
 }
-
- 

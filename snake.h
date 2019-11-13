@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _SNAKE_H__
+#define _SNAKE_H__
 
 typedef struct Coordinate {
 	int row, col;
@@ -15,3 +16,5 @@ void merge_arr(int map[MAP_COL][MAP_ROW], snake *s, coor *f);
 int is_crash();
 int is_collide();
 void run_snake();
+
+#endif

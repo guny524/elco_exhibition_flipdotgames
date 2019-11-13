@@ -1,13 +1,16 @@
-#pragma once
+#ifndef _DISPLAY_H__
 
-#define ISWINDOW 1
+#define _DISPLAY_H__
 
-#define MAP_ROW 12
-#define MAP_COL 16
+#include"osname.h"
 
-#include<stdio.h>
-#include<stdlib.h>	//rand(), srand();
-#include<time.h>	//time(NULL);
+char g_arr[MAP_COL][MAP_ROW];
+int g_key = 0;
+
+int get_key();
+void display(char g_arr[MAP_COL][MAP_ROW]);
+void clear();
+void wait();
 
 #if ISWINDOW
 #include<windows.h>	//Sleep(1000);
@@ -20,9 +23,7 @@ static struct termios old, current;
 void initTermios(int echo);
 char getch();
 int kbhit();
+
 #endif
 
-void commute_init();
-void clear();
-void send_arr();
-void wait();
+#endif

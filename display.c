@@ -1,50 +1,41 @@
-#include"common.h"
+#include"osname.h"
+#include"display.h"
+#include"i2c.h"
 
-char g_buffer;
-void commute_init()
-{
-	;
-}
-
-char g_arr[MAP_COL][MAP_ROW];
 void clear()
 {
 	for (int i = 0; i < MAP_COL; i++)
 		for (int j = 0; j < MAP_ROW; j++)
 			g_arr[i][j] = 0;
-	send_arr();
+	display();
+}
+int get_key()
+{
+	int key;
+	if (kbhit())
+	{
+		key = getch();
+		while (kbhit())
+			getch();
+	}
+	return key;
 }
 
-int g_key=0;
-
 #if ISWINDOW
-void send_arr()
+void display()
 {
-	system("cls");
 	for (int i = 0; i < MAP_COL; i++)
-	{
 		for (int j = 0; j < MAP_ROW; j++)
-			printf("%d", g_arr[i][j]);
-		printf("\n");
-	}
-	printf("\n");
+			printf("%d ", g_arr[i][j]);
 }
 void wait()
 {
 	Sleep(1000);
 }
 #else
-void send_arr(char arr[MAP_COL][MAP_ROW])
+void display()
 {
-	system("clear");
-	for (int i = 0; i < MAP_COL; i++)
-	{
-		for (int j = 0; j < MAP_ROW; j++)
-			printf("%d", g_arr[i][j]);
-		printf("\n");
-	}
-	printf("\n");
-	//통신부분 들어가야함
+
 }
 void wait()
 {

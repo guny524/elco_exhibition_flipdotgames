@@ -1,9 +1,5 @@
-#include"common.h"
+#include"display.h"
 #include"typing.h"
-
-extern char g_arr[MAP_COL][MAP_ROW];
-extern int g_key;
-extern char g_buffer;
 
 void typing(char key)
 {

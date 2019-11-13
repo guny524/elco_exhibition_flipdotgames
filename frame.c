@@ -1,13 +1,8 @@
-#include <stdio.h>
-
+#include"display.h"
 #include "i2c.h"
 #include "frame.h"
 
-#define MAP_ROW 12
-#define MAP_COL 16
-
-extern char g_arr[MAP_COL][MAP_ROW];
-extern char g_arr_new[MAP_COL][MAP_ROW];
+char g_arr_new[MAP_COL][MAP_ROW];
 
 void frame_change(int fd, unsigned char address)
 {
