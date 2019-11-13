@@ -1,8 +1,6 @@
-#include"display.h"
+#include"osname.h"
 #include "i2c.h"
 #include "frame.h"
-
-char g_arr_new[MAP_COL][MAP_ROW];
 
 void frame_change(int fd, unsigned char address)
 {

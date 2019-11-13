@@ -3,13 +3,11 @@
 #define _DISPLAY_H__
 
 #include"osname.h"
-
-char g_arr[MAP_COL][MAP_ROW];
-int g_key = 0;
+#include"i2c.h"
 
 int get_key();
-void display(char g_arr[MAP_COL][MAP_ROW]);
-void clear();
+void display(char arr[MAP_COL][MAP_ROW]);
+void clear(char arr[MAP_COL][MAP_ROW]);
 void wait();
 
 #if ISWINDOW

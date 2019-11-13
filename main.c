@@ -1,6 +1,5 @@
 #include"osname.h"
 #include"display.h"
-#include"i2c.h"
 #include"frame.h"
 #include"snake.h"
 #include"typing.h"

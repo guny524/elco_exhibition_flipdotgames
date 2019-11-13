@@ -2,12 +2,11 @@
 #include"display.h"
 #include"i2c.h"
 
-void clear()
+void clear(char arr[MAP_COL][MAP_ROW])
 {
 	for (int i = 0; i < MAP_COL; i++)
 		for (int j = 0; j < MAP_ROW; j++)
-			g_arr[i][j] = 0;
-	display();
+			arr[i][j] = 0;
 }
 int get_key()
 {
@@ -22,11 +21,15 @@ int get_key()
 }
 
 #if ISWINDOW
-void display()
+void display(char arr[MAP_COL][MAP_ROW])
 {
 	for (int i = 0; i < MAP_COL; i++)
+	{
 		for (int j = 0; j < MAP_ROW; j++)
-			printf("%d ", g_arr[i][j]);
+			printf("%d", arr[i][j]);
+		printf("\n");
+	}
+	printf("\n");
 }
 void wait()
 {
