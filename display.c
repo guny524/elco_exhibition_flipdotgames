@@ -1,6 +1,6 @@
 #include"osname.h"
 #include"display.h"
-#include"i2c.h"
+#include"frame.h"
 
 void clear(char arr[MAP_COL][MAP_ROW])
 {
@@ -38,7 +38,15 @@ void wait()
 #else
 void display()
 {
-
+	for (int i = 0; i < MAP_COL; i++)
+	{
+		for (int j = 0; j < MAP_ROW; j++)
+			printf("%d", arr[i][j]);
+		printf("\n");
+	}
+	printf("\n");
+	frame();
+}
 }
 void wait()
 {

@@ -17,6 +17,9 @@ void frame_change(int fd, unsigned char address)
                 }
         }
         raspi_i2c_write(fd, address, arr_def, arr_def_len);
-        for( i = 0;i < arr_def_len;i = 0)
+        for( i = 0;i < arr_def_len;i = 0){
+                printf("( %d , %d )", arr_def[i] >> 4, arr_def[i] & 0x0F);
                 arr_def[i] = 0;
+        }
+        printf("\n");
 }
