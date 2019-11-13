@@ -11,7 +11,7 @@ void frame_change(int fd, unsigned char address)
         for( i = 0;i < MAP_COL;i++ ){
                 for(j = 0;j < MAP_ROW;j++ ){
                         if( g_arr[i][j] != g_arr_new[i][j] ){
-                                g_arr[i][j] = g_arr_new[i][j]; 
+                                g_arr[i][j] = g_arr_new[i][j];
                                 arr_def[arr_def_len++] = (i << 4) | j;
                         }
                 }
