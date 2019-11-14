@@ -24,11 +24,11 @@ void display(char arr[MAP_ROW][MAP_COL])
 }
 void wait()
 {
-	Sleep(1000);
+	Sleep(1500);	//1.5s
 }
 void waitm()
 {
-	Sleep(100);
+	Sleep(100);	//100ms
 }
 #else
 void display(char arr[MAP_ROW][MAP_COL])
@@ -37,11 +37,11 @@ void display(char arr[MAP_ROW][MAP_COL])
 }
 void waitm()
 {
-	usleep(100000);
+	usleep(100000);		//1.5s
 }
 void wait()
 {
-	sleep(1);
+	usleep(1500000);	//100ms
 }
 /* Initialize new terminal i/o settings */
 void initTermios(int echo) {
