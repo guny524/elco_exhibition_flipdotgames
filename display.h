@@ -5,10 +5,10 @@
 #include"osname.h"
 #include"i2c.h"
 
-int get_key();
-void display(char arr[MAP_COL][MAP_ROW]);
-void clear(char arr[MAP_COL][MAP_ROW]);
+void display(char arr[MAP_ROW][MAP_COL]);
+void clear(char arr[MAP_ROW][MAP_COL]);
 void wait();
+void waitm();
 
 #if ISWINDOW
 #include<windows.h>	//Sleep(1000);

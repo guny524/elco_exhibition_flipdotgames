@@ -1,41 +1,57 @@
 #include"osname.h"
 #include"display.h"
-#include"frame.h"
 #include"snake.h"
-#include"typing.h"
+#include"i2c.h"
+
+char play = 1;
+
+void excute(char arr[MAP_ROW][MAP_COL], char *key, int i, int j, int state)
+{
+	if (kbhit())
+	{
+		play = 0;
+		key = getch();
+		while (kbhit())
+			getch();
+	}
+	arr[i][j] = state;
+	display(arr);
+	waitm();
+}
 
 int main()
 {
-	g_fd_i2c = raspi_i2c_set();
-	clear();
-	g_key = 0;
+	char key=0;
+	char arr[MAP_ROW][MAP_COL] = {0,};
+	raspi_i2c_set(0x68);
 
 	while (1)
 	{
-		printf("0.typing\n"); 
-		printf("1.snake\n");
-		printf("2.tetris\n");
-		printf("3.car\n");
+		for(int i=0;i<MAP_ROW;i++)
+			for (int j = 0; j < MAP_ROW; j++)
+				if(play)
+					excute(arr, &key,i,j,1);
+		for (int i = 0; i < MAP_ROW; i++)
+			for (int j = 0; j < MAP_ROW; j++)
+				if (play)
+					excute(arr, &key, i, j, 0);
 
-		g_key = getch();
-		if (g_key == 'ESC')
+		if (kbhit())
+		{
+			key = getch();
+			while (kbhit())
+				getch();
+		}
+		if (key == 'ESC')
 			return;
-		else if (g_key == '0')
+		if (key != 0)
 		{
-			run_typing();
-		}
-		else if (g_key == '1')
-		{
+			clear(arr);
 			run_snake();
-		}
-		else if (g_key == '2')
-		{
-			run_snake();
-		}
-		else if (g_key == '3')
-		{
-			run_snake();
+			key = 0;
+			play = 1;
 		}
 	}
+	raspi_i2c_realese();
 	return 0;
 }

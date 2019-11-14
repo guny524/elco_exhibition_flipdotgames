@@ -2,6 +2,6 @@
 
 #define FRAME_H__
 
-void frame_change(int fd, unsigned char address);
+void frame_change(char arr[MAP_COL][MAP_ROW]);
 
 #endif

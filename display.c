@@ -2,26 +2,16 @@
 #include"display.h"
 #include"frame.h"
 
-void clear(char arr[MAP_COL][MAP_ROW])
+void clear(char arr[MAP_ROW][MAP_COL])
 {
 	for (int i = 0; i < MAP_COL; i++)
 		for (int j = 0; j < MAP_ROW; j++)
 			arr[i][j] = 0;
 }
-int get_key()
-{
-	int key;
-	if (kbhit())
-	{
-		key = getch();
-		while (kbhit())
-			getch();
-	}
-	return key;
-}
 
 #if ISWINDOW
-void display(char arr[MAP_COL][MAP_ROW])
+#include<stdio.h>
+void display(char arr[MAP_ROW][MAP_COL])
 {
 	for (int i = 0; i < MAP_COL; i++)
 	{
@@ -35,22 +25,22 @@ void wait()
 {
 	Sleep(1000);
 }
+void waitm()
+{
+	Sleep(100);
+}
 #else
 void display()
 {
-	for (int i = 0; i < MAP_COL; i++)
-	{
-		for (int j = 0; j < MAP_ROW; j++)
-			printf("%d", arr[i][j]);
-		printf("\n");
-	}
-	printf("\n");
-	frame();
+	frame_change(arr);
 }
+void waitm()
+{
+	usleep(100000);
 }
 void wait()
 {
-	sleep(1);
+
 }
 /* Initialize new terminal i/o settings */
 void initTermios(int echo) {
