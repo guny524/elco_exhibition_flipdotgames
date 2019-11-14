@@ -1,6 +1,7 @@
 #include"osname.h"
 #include"display.h"
 #include"frame.h"
+#include<stdio.h>
 
 void clear(char arr[MAP_ROW][MAP_COL])
 {
@@ -30,7 +31,7 @@ void waitm()
 	Sleep(100);
 }
 #else
-void display()
+void display(char arr[MAP_ROW][MAP_COL])
 {
 	frame_change(arr);
 }
@@ -40,7 +41,7 @@ void waitm()
 }
 void wait()
 {
-
+	sleep(1);
 }
 /* Initialize new terminal i/o settings */
 void initTermios(int echo) {

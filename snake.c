@@ -35,13 +35,6 @@ void init_snake()
 	s.arr[0].row = rand() % (MAP_ROW - 2) + 1;
 	s.size = 1;
 }
-void init_feed(snake *ss)
-{
-	feed.col = rand() % (MAP_COL - 2) + 1;
-	feed.row = rand() % (MAP_ROW - 2) + 1;
-	if (is_consume(ss))
-		init_feed(ss);
-}
 void merge_arr()
 {
 	for (int i = 0; i < MAP_COL; i++)
@@ -98,6 +91,13 @@ int is_consume(snake *ss)	//with feed?
 		if (ss->arr[i].row == feed.row && ss->arr[i].col == feed.col)
 			return 1;
 	return 0;
+}
+void init_feed(snake *ss)
+{
+	feed.col = rand() % (MAP_COL - 2) + 1;
+	feed.row = rand() % (MAP_ROW - 2) + 1;
+	if (is_consume(ss))
+		init_feed(ss);
 }
 void finish()
 {

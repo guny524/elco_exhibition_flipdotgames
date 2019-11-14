@@ -25,10 +25,6 @@ int raspi_i2c_read(unsigned char *data)
 {
 }
 
-void raspi_i2c_realese()
-{
-}
-
 #else
 unsigned char CalcChecksum(unsigned char *data, int leng)
 {
@@ -47,11 +43,6 @@ int raspi_i2c_set(unsigned char add)
                 printf("Unable to initialise I2C ERROR: %s\n", strerror(errno));
         }
         return fd;
-}
-
-void raspi_i2c_realese()
-{
-	close(fd);
 }
 
 int raspi_i2c_write(unsigned char *data, unsigned char length)

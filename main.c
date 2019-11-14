@@ -10,7 +10,7 @@ void excute(char arr[MAP_ROW][MAP_COL], char *key, int i, int j, int state)
 	if (kbhit())
 	{
 		play = 0;
-		key = getch();
+		*key = getch();
 		while (kbhit())
 			getch();
 	}
@@ -42,8 +42,8 @@ int main()
 			while (kbhit())
 				getch();
 		}
-		if (key == 'ESC')
-			return;
+		if (key == 27)
+			return 0;
 		if (key != 0)
 		{
 			clear(arr);
@@ -52,6 +52,5 @@ int main()
 			play = 1;
 		}
 	}
-	raspi_i2c_realese();
 	return 0;
 }
