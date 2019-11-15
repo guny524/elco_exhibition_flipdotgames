@@ -23,7 +23,7 @@ int main()
 {
 	char key=0;
 	char arr[MAP_ROW][MAP_COL] = {0,};
-	raspi_i2c_set(0x68);
+	raspi_i2c_set();
 
 	while (1)
 	{

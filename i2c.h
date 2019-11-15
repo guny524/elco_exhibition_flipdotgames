@@ -6,8 +6,8 @@
 
 #define I2C_SLAVE_ADDRESS 0x68
 
-int raspi_i2c_set();
-int raspi_i2c_write(int fd, unsigned char *data, unsigned char length);
-int raspi_i2c_read(int fd, unsigned char *data);
+void raspi_i2c_set();
+int raspi_i2c_write(unsigned char *data, unsigned char length);
+int raspi_i2c_read(unsigned char *data);
 
 #endif

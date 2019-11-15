@@ -1,9 +1,13 @@
+
 #include <unistd.h>			
 #include <fcntl.h>		        
 #include <sys/ioctl.h>			
 #include <linux/i2c-dev.h>		
+#include<stdio.h>
 
 #include "i2c.h"
+
+int fd;
 
 unsigned char CalcChecksum(unsigned char *data, int leng)
 {
@@ -15,7 +19,7 @@ unsigned char CalcChecksum(unsigned char *data, int leng)
         return ~csum;
 }
 
-int i2c_write(int fd, unsigned char *data, int length)
+int i2c_write(unsigned char *data, int length)
 {
         int arg;
         
@@ -25,7 +29,7 @@ int i2c_write(int fd, unsigned char *data, int length)
         return arg;
 }
 
-int i2c_read(int fd, unsigned char *data, int length)
+int i2c_read(unsigned char *data, int length)
 {
         int arg;
 
@@ -35,21 +39,18 @@ int i2c_read(int fd, unsigned char *data, int length)
         return arg;
 }   
 
-int raspi_i2c_set()
+void raspi_i2c_set()
 {
-        int fd_i2c;
         char *filename = (char*)"/dev/i2c-1";
 
-	if ((fd_i2c = open(filename, O_RDWR)) < 0)
+	if ((fd = open(filename, O_RDWR)) < 0)
 		printf("Failed to open the i2c bus");
 
-        if (ioctl(fd_i2c, I2C_SLAVE, I2C_SLAVE_ADDRESS) < 0)
+        if (ioctl(fd, I2C_SLAVE, I2C_SLAVE_ADDRESS) < 0)
 		printf("Failed to acquire bus access and/or talk to slave.\n");
-        
-        return fd_i2c;
 }
 
-int raspi_i2c_write(int fd, unsigned char *data, unsigned char length)
+int raspi_i2c_write(unsigned char *data, unsigned char length)
 {
         unsigned char buffer[length + 4];
 
@@ -61,20 +62,20 @@ int raspi_i2c_write(int fd, unsigned char *data, unsigned char length)
         buffer[length + 2] = CalcChecksum(data, length);
         buffer[length + 3] = 0xFE;
         //i2c write
-        i2c_write(fd, buffer, length+4);
+        i2c_write(buffer, length+4);
 
         return length;
 }
 
-int raspi_i2c_read(int fd, unsigned char *data)
+int raspi_i2c_read(unsigned char *data)
 {
         unsigned char buffer[254] = {0,};
         int length;
         int i;
 
-        i2c_read(fd, buffer, 2);
+        i2c_read(buffer, 2);
         length = buffer[1];
-        i2c_read(fd, buffer+2, length +2);
+        i2c_read(buffer+2, length +2);
         for(i = 0;i < length;i++){
                 data[i] = buffer[i+2];
         }
