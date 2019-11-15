@@ -1,31 +1,10 @@
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
+#include <unistd.h>			
+#include <fcntl.h>		        
+#include <sys/ioctl.h>			
+#include <linux/i2c-dev.h>		
 
 #include "i2c.h"
 
-/*
- * int wiringPiI2CSetup (int devId)
- * int wiringPiI2CWriteReg8 (int fd, int reg, int data)
- * int wiringPiI2CReadReg8 (int fd, int reg)
- */
-
-int fd;
-unsigned char address;
-
-#if ISWINDOW
-int raspi_i2c_set(unsigned char add)
-{
-
-}
-int raspi_i2c_write(unsigned char *data, unsigned char length)
-{
-}
-int raspi_i2c_read(unsigned char *data)
-{
-}
-
-#else
 unsigned char CalcChecksum(unsigned char *data, int leng)
 {
         unsigned char csum;
@@ -36,46 +15,76 @@ unsigned char CalcChecksum(unsigned char *data, int leng)
         return ~csum;
 }
 
-int raspi_i2c_set(unsigned char add)
+int i2c_write(int fd, unsigned char *data, int length)
 {
-		address = add;
-        if( fd = wiringPiI2CSetup(address) == -1 ){
-                printf("Unable to initialise I2C ERROR: %s\n", strerror(errno));
-        }
-        return fd;
+        int arg;
+        
+        if (arg = write(fd, data, length) != length)		
+		printf("Failed to write to the i2c bus.\n");
+
+        return arg;
 }
 
-int raspi_i2c_write(unsigned char *data, unsigned char length)
+int i2c_read(int fd, unsigned char *data, int length)
 {
-        wiringPiI2CWriteReg8(fd, address, 0xFF);//START BYTE
-        wiringPiI2CWriteReg8(fd, address, length + 1);
+        int arg;
+
+        if (read(fd, data, length) != length)
+		printf("Failed to read from the i2c bus.\n");
+        
+        return arg;
+}   
+
+int raspi_i2c_set()
+{
+        int fd_i2c;
+        char *filename = (char*)"/dev/i2c-1";
+
+	if ((fd_i2c = open(filename, O_RDWR)) < 0)
+		printf("Failed to open the i2c bus");
+
+        if (ioctl(fd_i2c, I2C_SLAVE, I2C_SLAVE_ADDRESS) < 0)
+		printf("Failed to acquire bus access and/or talk to slave.\n");
+        
+        return fd_i2c;
+}
+
+int raspi_i2c_write(int fd, unsigned char *data, unsigned char length)
+{
+        unsigned char buffer[length + 4];
+
+        buffer[0] = 0xFF;
+        buffer[1] = length;
         for( int i = 0;i < length;i++ ){
-                wiringPiI2CWriteReg8(fd, address, data[i]);
+                buffer[i+2] = data[i];
         }
-        wiringPiI2CWriteReg8(fd, address, 0xFE);//STOP BYTE
-        wiringPiI2CWriteReg8(fd, address, CalcChecksum(data, length));//CHECKSUM
+        buffer[length + 2] = CalcChecksum(data, length);
+        buffer[length + 3] = 0xFE;
+        //i2c write
+        i2c_write(fd, buffer, length+4);
+
         return length;
 }
 
-int raspi_i2c_read(unsigned char *data)
+int raspi_i2c_read(int fd, unsigned char *data)
 {
-        unsigned char length;
-        if(wiringPiI2CReadReg8(fd, address) == 0xFF){//START BYTE
-                printf("START BYTE ERROR\n");
-                return -1;
+        unsigned char buffer[254] = {0,};
+        int length;
+        int i;
+
+        i2c_read(fd, buffer, 2);
+        length = buffer[1];
+        i2c_read(fd, buffer+2, length +2);
+        for(i = 0;i < length;i++){
+                data[i] = buffer[i+2];
         }
-        length = wiringPiI2CReadReg8(fd, address);
-        for( int i = 0;i < length;i++ ){
-                data[i] = wiringPiI2CReadReg8(fd, address);
-        }
-        if(wiringPiI2CReadReg8(fd, address) == 0xFE){//STOP BYTE
-                printf("STOP BYTE ERROR\n");
-                return -1;
-        }
-        if( data[length - 1] != CalcChecksum(data, length)){//CHECKSUM
+        if( data[length + 2] != CalcChecksum(data, length)){                                                                                                                                                                                 //CHECKSUM
                 printf("CHECKSUM ERROR\n");
-                return -1;
+                for(i = 0;i < (length + 4); i++){
+                        printf("%x ", data[i]);
+                }
+                printf("\n");
         }
+
         return length;
 }
-#endif
